@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>115-1主題書展「書裡藏了甚麼鬼」-『抓鬼九宮格』</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Noto+Serif+TC:wght@700;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 全域視覺基礎 */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #0d0714;
+            font-family: 'Noto Serif TC', serif;
+            user-select: none;
+        }
+
+        /* 標題字體與特效 */
+        .spooky-font {
+            font-family: 'ZCOOL KuaiLe', 'Creepster', cursive, sans-serif;
+        }
+
+        /* 毒液綠與萬聖橘動態發光文字 */
+        .glow-title-primary {
+            color: #39ff14;
+            text-shadow: 
+                0 0 5px #39ff14,
+                0 0 10px #39ff14,
+                0 0 20px #228b22,
+                0 0 40px #005f00,
+                0 0 80px #003300;
+            animation: pulseGlowGreen 3s infinite alternate ease-in-out;
+        }
+
+        .glow-title-secondary {
+            color: #ff7518;
+            text-shadow: 
+                0 0 5px #ff7518,
+                0 0 15px #ff4500,
+                0 0 30px #8b0000,
+                0 0 60px #4a0000;
+            animation: pulseGlowOrange 2.5s infinite alternate ease-in-out;
+        }
+
+        .glow-sub-title {
+            color: #e0e7ff;
+            text-shadow: 
+                0 0 8px #a855f7,
+                0 0 20px #7e22ce,
+                0 0 35px #581c87;
+            animation: pulseGlowPurple 4s infinite alternate ease-in-out;
+        }
+
+        /* 發光動畫定義 */
+        @keyframes pulseGlowGreen {
+            0% {
+                text-shadow: 0 0 5px #39ff14, 0 0 15px #39ff14, 0 0 30px #228b22;
+                filter: brightness(1);
+            }
+            100% {
+                text-shadow: 0 0 10px #39ff14, 0 0 25px #39ff14, 0 0 50px #00ff66, 0 0 90px #003300;
+                filter: brightness(1.3);
+            }
+        }
+
+        @keyframes pulseGlowOrange {
+            0% {
+                text-shadow: 0 0 5px #ff7518, 0 0 15px #ff4500, 0 0 30px #8b0000;
+            }
+            100% {
+                text-shadow: 0 0 12px #ff7518, 0 0 30px #ff4500, 0 0 60px #ff0000, 0 0 100px #8b0000;
+            }
+        }
+
+        @keyframes pulseGlowPurple {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; filter: drop-shadow(0 0 15px #9333ea); }
+        }
+
+        /* 飄浮幽靈動畫 */
+        @keyframes floatGhost {
+            0% { transform: translateY(0px) rotate(0deg) scale(1); }
+            50% { transform: translateY(-25px) rotate(5deg) scale(1.05); }
+            100% { transform: translateY(0px) rotate(0deg) scale(1); }
+        }
+
+        .floating-ghost {
+            animation: floatGhost 6s ease-in-out infinite;
+        }
+
+        .floating-ghost-delayed {
+            animation: floatGhost 8s ease-in-out 3s infinite;
+        }
+
+        /* 南瓜微光微動 */
+        @keyframes flickering {
+            0%, 100% { opacity: 0.9; filter: drop-shadow(0 0 15px #ff7518); }
+            50% { opacity: 0.6; filter: drop-shadow(0 0 5px #ff4500); }
+            70% { opacity: 1; filter: drop-shadow(0 0 25px #ffaa00); }
+        }
+
+        .pumpkin-flicker {
+            animation: flickering 2s infinite;
+        }
+
+        /* 蜘蛛網裝飾 */
+        .web-corner-left {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 280px;
+            pointer-events: none;
+            opacity: 0.4;
+            background: radial-gradient(circle at 0 0, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-bottom-right-radius: 100%;
+            border-right: 1px dashed rgba(255, 255, 255, 0.2);
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .web-corner-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 280px;
+            pointer-events: none;
+            opacity: 0.4;
+            background: radial-gradient(circle at 100% 0, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-bottom-left-radius: 100%;
+            border-left: 1px dashed rgba(255, 255, 255, 0.2);
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="relative w-screen h-screen flex items-center justify-center bg-gradient-to-b from-[#0a0312] via-[#150a21] to-[#05010a]">
+
+    <!-- 動態蝙蝠粒子與魔法花火 Canvas -->
+    <canvas id="spookyCanvas" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <!-- 兩側蜘蛛網裝飾 -->
+    <div class="web-corner-left hidden sm:block"></div>
+    <div class="web-corner-right hidden sm:block"></div>
+
+    <!-- 飄浮裝飾性背景元素：血月暈光 -->
+    <div class="absolute w-[500px] h-[500px] sm:w-[700px] sm:h-[700px] bg-purple-900/20 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="absolute w-[300px] h-[300px] bg-orange-600/15 rounded-full blur-[100px] pointer-events-none z-0"></div>
+
+    <!-- 主要內容區塊 -->
+    <main class="relative z-10 text-center px-4 max-w-6xl mx-auto flex flex-col items-center justify-center h-full">
+        
+        <!-- 飄浮左側幽靈小圖標 (小螢幕隱藏) -->
+        <div class="absolute -top-12 left-6 sm:left-12 text-5xl sm:text-7xl floating-ghost pointer-events-none opacity-80 select-none">
+            👻
+        </div>
+
+        <!-- 飄浮右側幽靈小圖標 (小螢幕隱藏) -->
+        <div class="absolute top-1/4 right-6 sm:right-16 text-4xl sm:text-6xl floating-ghost-delayed pointer-events-none opacity-75 select-none">
+            🎃
+        </div>
+
+        <!-- 書展代號：115-1主題書展 -->
+        <div class="mb-3 sm:mb-6 tracking-widest uppercase">
+            <span class="glow-sub-title spooky-font text-2xl sm:text-4xl md:text-5xl font-extrabold px-6 py-2 rounded-full border border-purple-500/30 bg-purple-950/40 backdrop-blur-md shadow-2xl">
+                🎃 115-1 主題書展 🎃
+            </span>
+        </div>
+
+        <!-- 主標題：書裡藏了甚麼鬼 -->
+        <h1 class="my-4 sm:my-8 leading-tight tracking-wider">
+            <span class="block glow-title-primary spooky-font text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black drop-shadow-2xl transition-transform hover:scale-105 duration-300">
+                「書裡藏了甚麼鬼」
+            </span>
+        </h1>
+
+        <!-- 副標題：抓鬼九宮格 -->
+        <div class="mt-2 sm:mt-6 flex items-center justify-center space-x-3 sm:space-x-6">
+            <span class="text-3xl sm:text-5xl pumpkin-flicker">🕷️</span>
+            <h2 class="glow-title-secondary spooky-font text-3xl sm:text-5xl md:text-6xl font-bold tracking-wide">
+                -『抓鬼九宮格』-
+            </h2>
+            <span class="text-3xl sm:text-5xl pumpkin-flicker">🕸️</span>
+        </div>
+
+        <!-- 底部裝飾燈籠/蝙蝠圖示 -->
+        <div class="mt-12 sm:mt-16 flex items-center justify-center space-x-8 text-2xl sm:text-4xl opacity-80">
+            <span class="floating-ghost">🦇</span>
+            <span class="pumpkin-flicker">🎃</span>
+            <span class="floating-ghost-delayed">🕯️</span>
+            <span class="pumpkin-flicker">🎃</span>
+            <span class="floating-ghost">🦇</span>
+        </div>
+
+    </main>
+
+    <script>
+        // 背景動態 Canvas：飛舞蝙蝠與微光粒子效果
+        const canvas = document.getElementById('spookyCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        // 蝙蝠粒子
+        class Bat {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = height + 20 + Math.random() * 50;
+                this.size = Math.random() * 12 + 8;
+                this.speedY = Math.random() * 1.5 + 0.8;
+                this.speedX = Math.sin(this.y * 0.05) * 1.2;
+                this.wingAngle = 0;
+                this.wingSpeed = Math.random() * 0.15 + 0.1;
+                this.opacity = Math.random() * 0.6 + 0.2;
+            }
+
+            update() {
+                this.y -= this.speedY;
+                this.x += Math.sin(this.y * 0.02) * 1.5;
+                this.wingAngle += this.wingSpeed;
+
+                if (this.y < -30) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.fillStyle = `rgba(20, 10, 30, ${this.opacity})`;
+                
+                // 簡化蝙蝠繪製
+                ctx.beginPath();
+                const wing = Math.sin(this.wingAngle) * (this.size * 0.6);
+                ctx.moveTo(0, 0);
+                ctx.quadraticCurveTo(-this.size, -this.size + wing, -this.size * 1.5, 0);
+                ctx.quadraticCurveTo(-this.size * 0.8, this.size * 0.5, 0, this.size * 0.3);
+                ctx.quadraticCurveTo(this.size * 0.8, this.size * 0.5, this.size * 1.5, 0);
+                ctx.quadraticCurveTo(this.size, -this.size + wing, 0, 0);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // 鬼火/閃爍微點粒子
+        class Ember {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 3 + 1;
+                this.speedY = -(Math.random() * 0.5 + 0.2);
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.color = Math.random() > 0.5 ? '#39ff14' : '#ff7518';
+                this.opacity = Math.random();
+                this.fadeSpeed = Math.random() * 0.01 + 0.005;
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                this.opacity -= this.fadeSpeed;
+
+                if (this.opacity <= 0 || this.y < 0) {
+                    this.reset();
+                    this.y = height + 10;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.opacity);
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // 初始化粒子數量
+        const bats = Array.from({ length: 15 }, () => new Bat());
+        const embers = Array.from({ length: 45 }, () => new Ember());
+
+        // 動態渲染迴圈
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            embers.forEach(ember => {
+                ember.update();
+                ember.draw();
+            });
+
+            bats.forEach(bat => {
+                bat.update();
+                bat.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        window.onload = function() {
+            animate();
+        };
+    </script>
+</body>
+</html>
